@@ -16,8 +16,8 @@
     "url": "git+https://github.com/daliborgogic/cf-worker-vue.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Dalibor Gogic <mail@daliborgogic.com>",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/daliborgogic/cf-worker-vueissues"
   },
