@@ -1,4 +1,4 @@
-import { pipeToWebWritable } from 'vue/server-renderer'
+import { renderToString } from 'vue/server-renderer'
 import { createApp } from './main'
 import { renderHeadToString } from '@vueuse/head'
 
@@ -37,32 +37,15 @@ function renderPreloadLink(file) {
 
 export async function render(url, manifest, template) {
   const { app, router, head } = createApp()
-  // set the router to the desired URL before rendering
+
   router.push(url)
   await router.isReady()
-  const ctx = {}
-  // await renderToString(app) // Workaround to get head  <meta name="head:count" content="0"> 
-  const { headTags } = renderHeadToString(head)
-  // console.log('headTags', headTags)
-
-  const tmpl = template.split('<!--app-->')
- 
-  const prepend = tmpl[0].replace(`<!--head-->`, headTags)
-  const append = tmpl[1]
-  const encoder = new TextEncoder()
-
-  const { readable, writable } = new TransformStream({
-    start(controller) {
-      controller.enqueue(encoder.encode(prepend))
-    },
-    flush(controller) {
-      controller.enqueue(encoder.encode(append))
-    }
-  })
-
-  pipeToWebWritable(app, ctx, writable)
   
+  const ctx = {}
+  const appHtml = await renderToString(app, ctx) 
+  const { headTags } = renderHeadToString(head)
+  const response = template.replace('<!--head-->', headTags).replace('<!--app-->', appHtml)
   const link = renderPreloadLinks(ctx?.modules, manifest)
 
-  return [readable, link]
+  return [response, link]
 }

@@ -8,9 +8,9 @@ globalThis.__VUE_PROD_DEVTOOLS__ = false
 async function handleRequest(request) {
   const { pathname } = new URL(request.url)
 
-  const [readable, link] = await render(pathname, manifest, template)
+  const [response, link] = await render(pathname, manifest, template)
 
-  return new Response(readable, {
+  return new Response(response, {
     headers: {
       'content-type': 'text/html;charset=UTF-8',
       'cache-control': 'no-cache',
