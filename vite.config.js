@@ -7,10 +7,15 @@ export default {
     vuePlugin({
       reactivityTransform: true
     }),
-    splitVendorChunkPlugin()
+    splitVendorChunkPlugin(),
+    {
+      configResolved(config) {
+        config.ssr.external = ['vue', 'vue-router', 'nprogress', '@vueuse/head']
+      }
+    }
   ],
   resolve: {
-    dedupe: ['vue', 'vue-router', '@vueuse/head'],
+    dedupe: ['vue', 'vue-router', 'nprogress', '@vueuse/head']
   },
   build: {
     minify: true
